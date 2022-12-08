@@ -22,6 +22,7 @@ func main() {
 
 func pt1() int {
 	file := open("7/input")
+	//file := open("7/test")
 	scanner := bufio.NewScanner(file)
 
 	var filesystem = Node{
@@ -115,7 +116,7 @@ func (n *Node) resize() int {
 
 func (n *Node) under(limit int) int {
 	var size int
-	if n.size <= limit {
+	if len(n.children) > 0 && n.size <= limit {
 		size += n.size
 	}
 
