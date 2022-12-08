@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -22,7 +23,6 @@ func main() {
 
 func pt1() int {
 	file := open("7/input")
-	//file := open("7/test")
 	scanner := bufio.NewScanner(file)
 
 	var filesystem = Node{
@@ -46,12 +46,31 @@ func pt2() int {
 	file := open("7/input")
 	scanner := bufio.NewScanner(file)
 
-	var output int
-	for scanner.Scan() {
-		// TASK
+	var filesystem = Node{
+		name:     "/",
+		size:     0,
+		parent:   nil,
+		children: []*Node{},
 	}
 
-	return output
+	var current = &filesystem
+	for scanner.Scan() {
+		text := scanner.Text()
+		current = current.parse(text)
+	}
+
+	filesystem.resize()
+	d := filesystem.directories()
+	sort.Ints(d)
+
+	limit := 30000000 - (70000000 - filesystem.size)
+	for _, v := range d {
+		if v >= limit {
+			return v
+		}
+	}
+
+	return 0
 }
 
 func open(name string) *os.File {
@@ -125,6 +144,19 @@ func (n *Node) under(limit int) int {
 	}
 
 	return size
+}
+
+func (n *Node) directories() []int {
+	var d []int
+	if len(n.children) > 0 {
+		d = append(d, n.size)
+	}
+
+	for _, c := range n.children {
+		d = append(d, c.directories()...)
+	}
+
+	return d
 }
 
 func (n *Node) print(prepend string) {
