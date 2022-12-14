@@ -18,8 +18,8 @@ var (
 	Knots []POS
 	M     map[POS]bool
 
-	MaxX int = 6
-	MaxY int = 6
+	MaxX = 6
+	MaxY = 6
 )
 
 func main() {
